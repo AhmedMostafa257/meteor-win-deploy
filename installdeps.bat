@@ -9,14 +9,16 @@ xcopy "%~dp0shared" "%SystemDrive%\" /s /e /t /q /h /y
 echo.
 
 echo Checking windows architecture
-reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32BIT || set OS=64BIT
+reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32 || set OS=64
 echo %OS% architecture detected
 echo.
 
-if %OS%==32BIT (
+if %OS%==32 (
   echo Installing 32-bit dependancies
   for %%i in ("%~dp0sources\x86\*.msi") do (
-    echo Installing %%i
+    for %%f in (%%i) do (
+      echo Installing %%~nf
+    )
     msiexec /i %%i /qf /norestart
   )
   echo.
@@ -28,10 +30,12 @@ if %OS%==32BIT (
   echo.
 
 )
-if %OS%==64BIT (
+if %OS%==64 (
   echo Installing 64-bit dependancies
   for %%i in ("%~dp0sources\x64\*.msi") do (
-    echo Installing %%i
+    for %%f in (%%i) do (
+      echo Installing %%~nf
+    )
     msiexec /i %%i /qf /norestart
   )
   echo.
@@ -50,7 +54,7 @@ echo Copying database configuration file
 
   echo Creating a service for MongoDB server
   "%ProgramFiles%\MongoDB\Server\bin\mongod.exe" --config "%SystemDrive%\etc\mongod.conf" --install
-  sc query MongoDB
+  sc query MongoDB > nul
   IF ERRORLEVEL 1060 (
     echo Service installation failed
   ) else (

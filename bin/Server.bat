@@ -34,19 +34,30 @@ for /F "tokens=3 delims=: " %%H in ('sc query "MongoDB" ^| findstr "        STAT
 )
 echo.
 
-for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%b-%%a)
-for /f "tokens=1-2 delims=/:" %%a in ("%TIME%") do (set mytime=%%a%%b)
-set FILENAME=%mydate%_%mytime%
+::for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%b-%%a)
+::for /f "tokens=1-2 delims=/:" %%a in ("%TIME%") do (set mytime=%%a%%b)
+::set FILENAME=%mydate%_%mytime%
 
-if exist "C:\var\www\meteor\bundle\programs\server" goto INSTALLNPM
-echo Applcation core files do not exist
+if exist "%SystemDrive%\var\www\meteor\bundle\programs\server" goto INSTALLNPM
+echo Application core files do not exist
 exit /b
 :INSTALLNPM
-c:
-cd "C:\var\www\meteor\bundle\programs\server"
+cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
 cmd /c npm i
 cmd /c npm audit fix
 cmd /c npm audit
 
-cd ..\..
-node "%SystemDrive%\var\www\meteor\bundle\main.js"
+if exist "%SystemDrive%\helper" goto INSTALLHELPERNPM
+echo Helper application files do not exist
+exit /b
+:INSTALLHELPERNPM
+cd "%SystemDrive%\helper"
+cmd /c npm i
+cmd /c npm audit fix
+cmd /c npm audit
+
+node "%SystemDrive%\helper\dist\main.js"
+
+pause
+
+exit /b

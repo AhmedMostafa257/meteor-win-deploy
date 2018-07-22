@@ -6,11 +6,11 @@ set LOGFILENAME=%mydate%_%mytime%.log
 
 for %%f in (%1) do set FILENAME=%%~nf
 
-if exist "C:\log" goto RUNPATCH
+if exist "%SystemDrive%\log" goto RUNPATCH
 echo Log directory not found
 echo Creating new directory for log files ....
-mkdir "C:\log"
+mkdir "%SystemDrive%\log"
 echo.
 
 :RUNPATCH
-cmd /c %1 > C:\log\%FILENAME%_%LOGFILENAME% 2>&1
+cmd /c %1 > %SystemDrive%\log\%FILENAME%_%LOGFILENAME% 2>&1

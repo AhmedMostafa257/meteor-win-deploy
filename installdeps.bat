@@ -1,19 +1,30 @@
 @echo OFF
 
+echo.
+echo.
+echo.
+
 echo Installing dependancies for Meteor application
 echo ..............................................
 echo.
 
+::if exist "%SystemDrive%\etc\labox\helper-config.json" goto FINISH
+::else goto COPYCFG
+
+::COPYCFG
+::echo Copying helper configuration file ...
+::xcopy /h /y "%~dp0bin\helper-config.json" "%SystemDrive%\etc\labox"
+
 echo Copying shared content
-xcopy "%~dp0shared" "%SystemDrive%\" /s /e /t /q /h /y
+xcopy "%~dp0shared" "%SystemDrive%\" /s /e /t /q /h
 echo.
 
 echo Checking windows architecture
-reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32 || set OS=64
+reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=x86 || set OS=x64
 echo %OS% architecture detected
 echo.
 
-if %OS%==32 (
+if %OS%==x86 (
   echo Installing 32-bit dependancies
   for %%i in ("%~dp0sources\x86\*.msi") do (
     for %%f in (%%i) do (
@@ -28,14 +39,11 @@ if %OS%==32 (
     start %%i
   )
   echo.
-
 )
-if %OS%==64 (
+if %OS%==x64 (
   echo Installing 64-bit dependancies
   for %%i in ("%~dp0sources\x64\*.msi") do (
-    for %%f in (%%i) do (
-      echo Installing %%~nf
-    )
+    \\10.0.0.
     msiexec /i %%i /qf /norestart
   )
   echo.
@@ -45,37 +53,72 @@ if %OS%==64 (
     start %%i
   )
   echo.
-
 )
 
+if exist "%SystemDrive%\etc\mongod.conf" goto CHECKSRV
+
 echo Copying database configuration file
+if %OS%==x64 (
   xcopy /h /y "%~dp0bin\MongoDB\Server\mongod.conf" "%SystemDrive%\etc\"
-  echo.
-
-  echo Creating a service for MongoDB server
-  "%ProgramFiles%\MongoDB\Server\bin\mongod.exe" --config "%SystemDrive%\etc\mongod.conf" --install
-  sc query MongoDB > nul
-  IF ERRORLEVEL 1060 (
-    echo Service installation failed
-  ) else (
-    echo Service installed successfully
-  )
-  echo.
-
-echo Running database server
-net start MongoDB
+) else xcopy /h /y "%~dp0bin\MongoDB\Server\mampv2\mongod.conf" "%SystemDrive%\etc\"
 echo.
 
-echo Adding MongoDB tools to system path
-setx /M PATH "%PATH%;%ProgramFiles%\MongoDB\Server\bin\"
+:CHECKSRV
+sc query MongoDB > nul
+if ERRORLEVEL 1060 (
+  goto CREATESRV
+) else goto ADDENVVARS
 
-echo Setting environment variables
-echo 1) Port
-SETx PORT 8000 /M
-echo 2) Mongo URL
-SETx MONGO_URL "mongodb://localhost:27017/admin" /M
-echo 3) Root URL
-SETx ROOT_URL http://localhost /M
+:CREATESRV
+echo Creating a service for MongoDB server
+"%ProgramFiles%\MongoDB\Server\bin\mongod.exe" --config "%SystemDrive%\etc\mongod.conf" --install
+sc query MongoDB > nul
+if ERRORLEVEL 1060 (
+  echo Service installation failed
+) else (
+  echo Service installed successfully
+)
 echo.
 
+:ADDENVVARS
+echo Adding MongoDB tools to system path ...
+if "!PATH:%ProgramFiles%\MongoDB\Server\bin\=!" equ "%PATH%" (
+   setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\bin\"
+)
+if "!PATH:%ProgramFiles%\MongoDB\Server\3.2\bin\=!" equ "%PATH%" (
+   setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\3.2\bin\"
+)
+if "!PATH:%ProgramFiles%\MongoDB\Server\3.4\bin\=!" equ "%PATH%" (
+   setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\3.4\bin\"
+)
+if "!PATH:%ProgramFiles%\MongoDB\Server\3.6\bin\=!" equ "%PATH%" (
+   setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\3.6\bin\"
+)
+echo Adding 7-Zip to system path ...
+if "!PATH:%ProgramFiles%\7-Zip\=!" equ "%PATH%" (
+   setx PATH "%PATH%;%ProgramFiles%\7-Zip\
+)
+echo.
+
+echo Setting environment variables ...
+if %PORT% equ 8000 goto SETMONGOURLVAR
+echo 1- Port
+setx PORT 8000 /M
+:SETMONGOURLVAR
+if %MONGO_URL% == "" (
+  echo 2- Mongo URL
+  setx MONGO_URL "mongodb://localhost:27017/admin" /M
+)
+if /I %ROOT_URL% == "http://localhost" goto FINISH
+echo 3- Root URL
+setx ROOT_URL "http://localhost" /M
+echo.
+
+:FINISH
 echo Dependancies installed
+
+echo.
+echo.
+echo.
+
+pause

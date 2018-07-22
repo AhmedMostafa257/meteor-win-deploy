@@ -1,5 +1,9 @@
 @echo OFF
 
+echo.
+echo.
+echo.
+
 echo Cleaning up Meteor application installation
 echo ...........................................
 echo.
@@ -60,3 +64,9 @@ del /F /Q "%userprofile%\Desktop\Sys.url"
 echo.
 
 echo Cleaning finished
+
+echo.
+echo.
+echo.
+
+pause

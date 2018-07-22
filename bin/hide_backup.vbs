@@ -1,1 +1,1 @@
-CreateObject("Wscript.Shell").Run "D:\bacscrpt\run.bat D:\bacscrpt\backup.bat", 0, False
+CreateObject("Wscript.Shell").Run "%SystemDrive%\scripts\run.bat %SystemDrive%\scripts\backup.bat", 0, False

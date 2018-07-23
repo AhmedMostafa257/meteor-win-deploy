@@ -21,6 +21,19 @@ set TIMENOW=%mydate%_%mytime%
 ::  'wmic computersystem get name'
 ::) do for /f "delims=" %%B in ("%%A") do set "compName=%%A"
 
+echo Copying helper application files ...
+xcopy /s /e /j /h /y "%~dp0helper\" "%SystemDrive%\helper\"
+echo.
+
+echo Copying scripting files ...
+for %%i in ("%~dp0bin\*.bat") do (
+  xcopy /s /e /j /h /y %%i "%SystemDrive%\scripts\"
+)
+for %%i in ("%~dp0bin\*.vbs") do (
+  xcopy /s /e /j /h /y %%i "%SystemDrive%\scripts\"
+)
+echo.
+
 echo Checking windows architecture ...
 reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=x86 || set OS=x64
 echo %OS% architecture detected
@@ -29,19 +42,31 @@ echo.
 cmd /c "%~dp0installdeps.bat"
 
 if exist "%SystemDrive%\var\www\meteor\bundle\" (
+  echo Bundle folder exists
+  echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle\" "bundle_%TIMENOW%"
+  echo.
   goto COPYCOREFILES
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.tar" (
+  echo Bundle tar archive exists
+  echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle.tar" "bundle_%TIMENOW%.tar"
+  echo.
   goto COPYCOREFILES
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
+  echo Bundle tar.xz archive exists
+  echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle.tar.xz" "bundle_%TIMENOW%.tar.xz"
+  echo.
   goto COPYCOREFILES
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
+  echo Bundle 7z archive exists
+  echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle.7z" "bundle_%TIMENOW%.7z"
+  echo.
   goto COPYCOREFILES
 )
 
@@ -56,23 +81,21 @@ if %OS%==x64 (
 cd "%SystemDrive%\var\www\meteor\"
 if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
   echo Extracting {Stage 1} ...
-  7z x "%SystemDrive%\var\www\meteor\bundle.tar.xz"
+  start cmd /k 7z x "%SystemDrive%\var\www\meteor\bundle.tar.xz"
   echo.
   echo Extracting {Stage 2} ...
-  7z x "%SystemDrive%\var\www\meteor\bundle.tar"
+  start cmd /k 7z x "%SystemDrive%\var\www\meteor\bundle.tar"
   echo.
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
   echo Extracting ...
-  7z x "%SystemDrive%\var\www\meteor\bundle.7z"
+  start cmd /k 7z x "%SystemDrive%\var\www\meteor\bundle.7z"
   echo.
 )
 
-echo Copying helper application files ...
-xcopy /s /e /j /q /h /y "%~dp0helper\" "%SystemDrive%\helper\"
-
 echo Creating scheduled tasks ...
 cmd /c "%~dp0\bin\schedule.bat"
+echo.
 
 ::call "%~dp0bin\npm.bat"
 

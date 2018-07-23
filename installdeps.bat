@@ -43,7 +43,7 @@ if %OS%==x86 (
 if %OS%==x64 (
   echo Installing 64-bit dependancies
   for %%i in ("%~dp0sources\x64\*.msi") do (
-    \\10.0.0.
+    echo Installing %%~nf
     msiexec /i %%i /qf /norestart
   )
   echo.

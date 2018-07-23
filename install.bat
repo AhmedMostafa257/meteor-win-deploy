@@ -106,6 +106,8 @@ echo [InternetShortcut] > "%userprofile%\Desktop\Sys.url"
 echo URL="http://localhost:8000" >> "%userprofile%\Desktop\Sys.url"
 echo.
 
+start cmd /k "%SystemDrive%\scripts\npm.bat"
+
 echo Finished
 
 echo.

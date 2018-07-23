@@ -38,24 +38,18 @@ echo.
 ::for /f "tokens=1-2 delims=/:" %%a in ("%TIME%") do (set mytime=%%a%%b)
 ::set FILENAME=%mydate%_%mytime%
 
-if exist "%SystemDrive%\var\www\meteor\bundle\programs\server" goto INSTALLNPM
+if exist "%SystemDrive%\var\www\meteor\bundle\programs\server" goto CHECKHELPER
 echo Application core files do not exist
+pause
 exit /b
-:INSTALLNPM
-cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
-cmd /c npm i
-cmd /c npm audit fix
-cmd /c npm audit
 
-if exist "%SystemDrive%\helper" goto INSTALLHELPERNPM
+:CHECKHELPER
+if exist "%SystemDrive%\helper" goto RUNAPP
 echo Helper application files do not exist
+pause
 exit /b
-:INSTALLHELPERNPM
-cd "%SystemDrive%\helper"
-cmd /c npm i
-cmd /c npm audit fix
-cmd /c npm audit
 
+:RUNAPP
 forever "%SystemDrive%\helper\dist\main.js"
 
 pause

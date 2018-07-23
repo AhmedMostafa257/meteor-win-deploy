@@ -127,9 +127,25 @@ echo 4- MongoDB outbound role
 netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
 echo.
 
+echo Updating NPM ...
+cmd /c npm i -g npm
+echo Installing forever ...
+cmd /c npm i -g forever
+echo.
 
-:FINISH
-echo Dependancies installed
+echo Meteor.JS application dependancies setup completed
+
+echo.
+echo.
+echo.
+
+echo ----------------------------------------------------
+echo.
+echo Setup completed and almost ready to copy and
+echo extract core application files to default paths
+echo review steps above to be sure before proceed
+echo.
+echo ----------------------------------------------------
 
 echo.
 echo.

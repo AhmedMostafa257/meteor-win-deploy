@@ -56,7 +56,7 @@ cmd /c npm i
 cmd /c npm audit fix
 cmd /c npm audit
 
-node "%SystemDrive%\helper\dist\main.js"
+forever "%SystemDrive%\helper\dist\main.js"
 
 pause
 

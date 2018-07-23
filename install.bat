@@ -1,5 +1,7 @@
 @echo OFF
 
+cls
+
 echo.
 echo.
 echo.
@@ -89,7 +91,7 @@ echo.
 
 echo ----------------------------------------------------
 echo.
-echo Setup completed and almost ready to run application
+echo Setup completed and will restart computer
 echo review steps above to be sure before proceed
 echo.
 echo ----------------------------------------------------
@@ -100,8 +102,5 @@ echo.
 
 pause
 
-cmd /c "%userprofile%\Desktop\Server.bat"
-
-pause
-
-exit /b
+::cmd /c "%userprofile%\Desktop\Server.bat"
+shutdown /r /t 0

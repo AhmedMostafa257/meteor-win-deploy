@@ -82,22 +82,23 @@ echo.
 
 :ADDENVVARS
 echo Adding MongoDB tools to system path ...
-if "!PATH:%ProgramFiles%\MongoDB\Server\bin\=!" equ "%PATH%" (
+::if "!PATH:%ProgramFiles%\MongoDB\Server\bin\=!" equ "%PATH%" (
    setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\bin\"
-)
-if "!PATH:%ProgramFiles%\MongoDB\Server\3.2\bin\=!" equ "%PATH%" (
+::)
+::if "!PATH:%ProgramFiles%\MongoDB\Server\3.2\bin\=!" equ "%PATH%" (
    setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\3.2\bin\"
-)
-if "!PATH:%ProgramFiles%\MongoDB\Server\3.4\bin\=!" equ "%PATH%" (
+::)
+::if "!PATH:%ProgramFiles%\MongoDB\Server\3.4\bin\=!" equ "%PATH%" (
    setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\3.4\bin\"
-)
-if "!PATH:%ProgramFiles%\MongoDB\Server\3.6\bin\=!" equ "%PATH%" (
+::)
+::if "!PATH:%ProgramFiles%\MongoDB\Server\3.6\bin\=!" equ "%PATH%" (
    setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\3.6\bin\"
-)
+::)
+echo.
 echo Adding 7-Zip to system path ...
-if "!PATH:%ProgramFiles%\7-Zip\=!" equ "%PATH%" (
-   setx PATH "%PATH%;%ProgramFiles%\7-Zip\
-)
+::if "!PATH:%ProgramFiles%\7-Zip\=!" equ "%PATH%" (
+   setx PATH "%PATH%;%ProgramFiles%\7-Zip\"
+::)
 echo.
 
 echo Setting environment variables ...
@@ -115,10 +116,16 @@ setx ROOT_URL "http://localhost" /M
 echo.
 
 :OPENPORTS
+echo Opening ports in firewall ...
+echo 1- Sync app inbound role
 netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
+echo 2- Sync app outbound role
 netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
+echo 3- MongoDB inbound role
 netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
+echo 4- MongoDB outbound role
 netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
+echo.
 
 
 :FINISH

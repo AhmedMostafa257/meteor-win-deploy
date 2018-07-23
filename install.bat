@@ -38,6 +38,10 @@ if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
   ren "%SystemDrive%\var\www\meteor\bundle.tar.xz" "bundle_%TIMENOW%.tar.xz"
   goto COPYCOREFILES
 )
+if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
+  ren "%SystemDrive%\var\www\meteor\bundle.7z" "bundle_%TIMENOW%.7z"
+  goto COPYCOREFILES
+)
 
 :COPYCOREFILES
 echo Copying application core files ...
@@ -48,12 +52,19 @@ if %OS%==x64 (
   xcopy /s/e /j /q /h /y "%~dp0x64" "%SystemDrive%\"
 )
 cd "%SystemDrive%\var\www\meteor\"
-echo Extracting {Stage 1} ...
-7z x "%SystemDrive%\var\www\meteor\bundle.tar.xz"
-echo.
-echo Extracting {Stage 2} ...
-7z x "%SystemDrive%\var\www\meteor\bundle.tar"
-echo.
+if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
+  echo Extracting {Stage 1} ...
+  7z x "%SystemDrive%\var\www\meteor\bundle.tar.xz"
+  echo.
+  echo Extracting {Stage 2} ...
+  7z x "%SystemDrive%\var\www\meteor\bundle.tar"
+  echo.
+)
+if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
+  echo Extracting ...
+  7z x "%SystemDrive%\var\www\meteor\bundle.7z"
+  echo.
+)
 
 echo Copying helper application files ...
 xcopy /s /e /j /q /h /y "%~dp0helper\" "%SystemDrive%\helper\"
@@ -65,12 +76,23 @@ cmd /c "%~dp0\bin\schedule.bat"
 
 echo Creating shortcuts ...
 xcopy /h /y "%~dp0bin\Server.bat" "%userprofile%\Desktop\"
-mklink "%userprofile%\Start Menu\Programs\Startup\Server.lnk" "%userprofile%\Desktop\Server.bat"
+::mklink "%userprofile%\Start Menu\Programs\Startup\Server.lnk" "%userprofile%\Desktop\Server.bat"
 echo [InternetShortcut] > "%userprofile%\Desktop\Sys.url"
 echo URL="http://localhost:8000" >> "%userprofile%\Desktop\Sys.url"
 echo.
 
 echo Finished
+
+echo.
+echo.
+echo.
+
+echo ----------------------------------------------------
+echo.
+echo Setup completed and almost ready to run application
+echo review steps above to be sure before proceed
+echo.
+echo ----------------------------------------------------
 
 echo.
 echo.

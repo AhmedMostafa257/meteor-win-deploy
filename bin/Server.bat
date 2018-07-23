@@ -50,8 +50,7 @@ pause
 exit /b
 
 :RUNAPP
-forever "%SystemDrive%\helper\dist\main.js"
+cd "%SystemDrive%\helper\"
+node dist\main.js
 
-pause
-
-exit /b
+goto RUNAPP

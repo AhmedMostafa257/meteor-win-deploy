@@ -22,7 +22,7 @@ set TIMENOW=%mydate%_%mytime%
 ::) do for /f "delims=" %%B in ("%%A") do set "compName=%%A"
 
 echo Copying helper application files ...
-xcopy /s /e /j /h /y "%~dp0helper\" "%SystemDrive%\helper\"
+xcopy /s /e /j /h /y "%~dp0helper\" "%SystemDrive%\"
 echo.
 
 echo Copying scripting files ...
@@ -73,10 +73,10 @@ if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
 :COPYCOREFILES
 echo Copying application core files ...
 if %OS%==x86 (
-  xcopy /s/e /j /q /h /y "%~dp0x86" "%SystemDrive%\"
+  xcopy /s/e /j /h /y "%~dp0x86" "%SystemDrive%\"
 )
 if %OS%==x64 (
-  xcopy /s/e /j /q /h /y "%~dp0x64" "%SystemDrive%\"
+  xcopy /s/e /j /h /y "%~dp0x64" "%SystemDrive%\"
 )
 cd "%SystemDrive%\var\www\meteor\"
 if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (

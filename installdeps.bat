@@ -109,10 +109,17 @@ if %MONGO_URL% == "" (
   echo 2- Mongo URL
   setx MONGO_URL "mongodb://localhost:27017/admin" /M
 )
-if /I %ROOT_URL% == "http://localhost" goto FINISH
+if /I %ROOT_URL% == "http://localhost" goto OPENPORTS
 echo 3- Root URL
 setx ROOT_URL "http://localhost" /M
 echo.
+
+:OPENPORTS
+netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
+netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
+netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
+netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
+
 
 :FINISH
 echo Dependancies installed

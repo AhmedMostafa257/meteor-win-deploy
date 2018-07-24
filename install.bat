@@ -3,11 +3,10 @@
 cls
 
 echo.
-echo.
-echo.
-
 echo Setting up Meteor application
 echo .............................
+echo.
+echo.
 echo.
 
 for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%b-%%a)
@@ -22,19 +21,22 @@ set TIMENOW=%mydate%_%mytime%
 ::) do for /f "delims=" %%B in ("%%A") do set "compName=%%A"
 
 echo Copying helper application files ...
-xcopy /s /e /j /h /y "%~dp0helper\" "%SystemDrive%\"
+echo.
+xcopy "%~dp0helper" "%SystemDrive%\helper\" /s /e /f /j /h /y
 echo.
 
 echo Copying scripting files ...
+echo.
 for %%i in ("%~dp0bin\*.bat") do (
-  xcopy /s /e /j /h /y %%i "%SystemDrive%\scripts\"
+  xcopy "%%i" "%SystemDrive%\scripts\" /f /j /h /y
 )
 for %%i in ("%~dp0bin\*.vbs") do (
-  xcopy /s /e /j /h /y %%i "%SystemDrive%\scripts\"
+  xcopy "%%i" "%SystemDrive%\scripts\" /f /j /h /y
 )
 echo.
 
 echo Checking windows architecture ...
+echo.
 reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=x86 || set OS=x64
 echo %OS% architecture detected
 echo.
@@ -72,6 +74,7 @@ if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
 
 :COPYCOREFILES
 echo Copying application core files ...
+echo.
 if %OS%==x86 (
   xcopy /s/e /j /h /y "%~dp0x86" "%SystemDrive%\"
 )
@@ -94,16 +97,19 @@ if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
 )
 
 echo Creating scheduled tasks ...
+echo.
 cmd /c "%~dp0\bin\schedule.bat"
 echo.
 
-::call "%~dp0bin\npm.bat"
-
 echo Creating shortcuts ...
-xcopy /h /y "%~dp0bin\Server.bat" "%userprofile%\Desktop\"
+echo.
+for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do (
+  set DESKTOP=%%D
+)
+xcopy /h /y "%~dp0bin\Server.bat" "%DESKTOP%"
 ::mklink "%userprofile%\Start Menu\Programs\Startup\Server.lnk" "%userprofile%\Desktop\Server.bat"
-echo [InternetShortcut] > "%userprofile%\Desktop\Sys.url"
-echo URL="http://localhost:8000" >> "%userprofile%\Desktop\Sys.url"
+echo [InternetShortcut] > "%DESKTOP%\Sys.url"
+echo URL="http://localhost:8000" >> "%DESKTOP%\Sys.url"
 echo.
 
 start cmd /k "%SystemDrive%\scripts\npm.bat"

@@ -43,6 +43,36 @@ echo.
 
 cmd /c "%~dp0installdeps.bat"
 
+if %OS%==x86 (
+  if exist "%~dp0x86\var\www\meteor\bundle\" (
+    goto RENFILES
+  )
+  if exist "%~dp0x86\var\www\meteor\bundle.tar" (
+    goto RENFILES
+  )
+  if exist "%~dp0x86\var\www\meteor\bundle.tar.xz"(
+    goto RENFILES
+  )
+  if exist "%~dp0x86\var\www\meteor\bundle.7z"(
+    goto RENFILES
+  )
+)
+if %OS%==x64(
+  if exist "%~dp0x64\var\www\meteor\bundle\" (
+    goto RENFILES
+  )
+  if exist "%~dp0x64\var\www\meteor\bundle.tar" (
+    goto RENFILES
+  )
+  if exist "%~dp0x64\var\www\meteor\bundle.tar.xz"(
+    goto RENFILES
+  )
+  if exist "%~dp0x64\var\www\meteor\bundle.7z"(
+    goto RENFILES
+  )
+)
+
+:RENFILES
 if exist "%SystemDrive%\var\www\meteor\bundle\" (
   echo Bundle folder exists
   echo Renaming ...
@@ -81,19 +111,15 @@ if %OS%==x86 (
 if %OS%==x64 (
   xcopy /s/e /j /h /y "%~dp0x64" "%SystemDrive%\"
 )
-cd "%SystemDrive%\var\www\meteor\"
+
 if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
-  echo Extracting {Stage 1} ...
-  start cmd /k 7z x "%SystemDrive%\var\www\meteor\bundle.tar.xz"
-  echo.
-  echo Extracting {Stage 2} ...
-  start cmd /k 7z x "%SystemDrive%\var\www\meteor\bundle.tar"
-  echo.
+  start cmd /k "%~dp0extract.bat"
+)
+if exist "%SystemDrive%\var\www\meteor\bundle.tar" (
+  start cmd /k "%~dp0extract.bat"
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
-  echo Extracting ...
-  start cmd /k 7z x "%SystemDrive%\var\www\meteor\bundle.7z"
-  echo.
+  start cmd /k "%~dp0extract.bat"
 )
 
 echo Creating scheduled tasks ...

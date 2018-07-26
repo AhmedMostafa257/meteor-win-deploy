@@ -59,7 +59,7 @@ if %OS%==x64 (
 
 if exist "%SystemDrive%\etc\mongod.conf" goto CHECKSRV
 
-echo Copying database configuration file
+echo Copying database configuration file ...
 if %OS%==x64 (
   xcopy /h /y "%~dp0bin\MongoDB\Server\mongod.conf" "%SystemDrive%\etc\"
 ) else xcopy /h /y "%~dp0bin\MongoDB\Server\mampv2\mongod.conf" "%SystemDrive%\etc\"
@@ -72,7 +72,7 @@ if ERRORLEVEL 1060 (
 ) else goto ADDENVVARS
 
 :CREATESRV
-echo Creating a service for MongoDB server
+echo Creating a service for MongoDB server ...
 "%ProgramFiles%\MongoDB\Server\bin\mongod.exe" --config "%SystemDrive%\etc\mongod.conf" --install
 sc query MongoDB > nul
 if ERRORLEVEL 1060 (
@@ -104,29 +104,44 @@ echo Adding 7-Zip to system path ...
 echo.
 
 echo Setting environment variables ...
-if %PORT% equ 8000 goto SETMONGOURLVAR
 echo 1- Port
-setx PORT 8000 /M
-:SETMONGOURLVAR
-if %MONGO_URL% == "" (
-  echo 2- Mongo URL
-  setx MONGO_URL "mongodb://localhost:27017/admin" /M
+if not defined PORT (
+  setx PORT 8000 /M
 )
-if /I %ROOT_URL% == "http://localhost" goto OPENPORTS
+echo %PORT%
+echo 2- Mongo URL
+if not defined MONGO_URL (
+  setx MONGO_URL "mongodb://127.0.0.1:27017/admin" /M
+)
+echo %MONGO_URL%
 echo 3- Root URL
-setx ROOT_URL "http://localhost" /M
+if not defined ROOT_URL (
+  setx ROOT_URL "http://localhost" /M
+)
+echo %ROOT_URL%
 echo.
+
 
 :OPENPORTS
 echo Opening ports in firewall ...
-echo 1- Sync app inbound role
-netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
-echo 2- Sync app outbound role
-netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
-echo 3- MongoDB inbound role
-netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
-echo 4- MongoDB outbound role
-netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
+echo 1- Sync app roles
+netsh advfirewall firewall show rule name="Meteor helper sync"
+if not %ERRORLEVEL% == 0 (
+  echo.
+  echo Adding roles ...
+  echo.
+  netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
+  netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
+)
+echo 2- MongoDB roles
+netsh advfirewall firewall show rule name="MongoDB"
+if not %ERRORLEVEL% == 0 (
+  echo.
+  echo Adding roles ...
+  echo.
+  netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
+  netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
+)
 echo.
 
 echo Meteor.JS application dependancies setup completed

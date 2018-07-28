@@ -50,26 +50,26 @@ if %OS%==x86 (
   if exist "%~dp0x86\var\www\meteor\bundle.tar" (
     goto RENFILES
   )
-  if exist "%~dp0x86\var\www\meteor\bundle.tar.xz"(
+  if exist "%~dp0x86\var\www\meteor\bundle.tar.xz" (
     goto RENFILES
   )
-  if exist "%~dp0x86\var\www\meteor\bundle.7z"(
+  if exist "%~dp0x86\var\www\meteor\bundle.7z" (
     goto RENFILES
-  )
+  ) else goto EXTRACTFILES
 )
-if %OS%==x64(
+if %OS%==x64 (
   if exist "%~dp0x64\var\www\meteor\bundle\" (
     goto RENFILES
   )
   if exist "%~dp0x64\var\www\meteor\bundle.tar" (
     goto RENFILES
   )
-  if exist "%~dp0x64\var\www\meteor\bundle.tar.xz"(
+  if exist "%~dp0x64\var\www\meteor\bundle.tar.xz" (
     goto RENFILES
   )
-  if exist "%~dp0x64\var\www\meteor\bundle.7z"(
+  if exist "%~dp0x64\var\www\meteor\bundle.7z" (
     goto RENFILES
-  )
+  ) else goto EXTRACTFILES
 )
 
 :RENFILES
@@ -78,31 +78,26 @@ if exist "%SystemDrive%\var\www\meteor\bundle\" (
   echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle\" "bundle_%TIMENOW%"
   echo.
-  goto COPYCOREFILES
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.tar" (
   echo Bundle tar archive exists
   echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle.tar" "bundle_%TIMENOW%.tar"
   echo.
-  goto COPYCOREFILES
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
   echo Bundle tar.xz archive exists
   echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle.tar.xz" "bundle_%TIMENOW%.tar.xz"
   echo.
-  goto COPYCOREFILES
 )
 if exist "%SystemDrive%\var\www\meteor\bundle.7z" (
   echo Bundle 7z archive exists
   echo Renaming ...
   ren "%SystemDrive%\var\www\meteor\bundle.7z" "bundle_%TIMENOW%.7z"
   echo.
-  goto COPYCOREFILES
 )
 
-:COPYCOREFILES
 echo Copying application core files ...
 echo.
 if %OS%==x86 (
@@ -112,6 +107,7 @@ if %OS%==x64 (
   xcopy /s/e /j /h /y "%~dp0x64" "%SystemDrive%\"
 )
 
+:EXTRACTFILES
 if exist "%SystemDrive%\var\www\meteor\bundle.tar.xz" (
   start cmd /k "%~dp0extract.bat"
 )
@@ -129,8 +125,12 @@ echo.
 
 echo Creating shortcuts ...
 echo.
-for /f "usebackq tokens=3*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do (
-  set DESKTOPDIR=%%D
+for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do (
+  if exist %%E (
+    set DESKTOPDIR=%%E
+  ) else (
+    set DESKTOPDIR=%USERPROFILE%\Desktop
+  )
 )
 ::xcopy /h /y "%~dp0bin\Server.bat" "%DESKTOPDIR%"
 mklink "%DESKTOPDIR%\Server.lnk" "%SystemDrive%\scripts\Server.bat"

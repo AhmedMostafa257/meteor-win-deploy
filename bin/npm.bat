@@ -7,10 +7,12 @@ echo Installing node modules
 echo .......................
 echo.
 
-echo Updating NPM ...
-echo.
-if %UNATTENDED% EQU 0 cmd /c npm i -g npm
-echo.
+if %UNATTENDED% EQU 0 (
+  echo Updating NPM ...
+  echo.
+  cmd /c npm i -g npm
+  echo.
+)
 
 if %HELPER% EQU 0 (
   goto INSTALLAPPNPM

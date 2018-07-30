@@ -28,9 +28,11 @@ if %OS%==x86 (
   echo Installing 32-bit dependancies
   for %%i in ("%~dp0sources\x86\*.msi") do (
     for %%f in (%%i) do (
-      echo Installing %%~nf
+      echo.
+      echo Installing %%~nf ...
+      echo.
     )
-    msiexec /i %%i /qf /norestart
+    msiexec /i %%i /qn /norestart
   )
   echo.
 
@@ -44,9 +46,11 @@ if %OS%==x64 (
   echo Installing 64-bit dependancies
   for %%i in ("%~dp0sources\x64\*.msi") do (
     for %%f in (%%i) do (
-      echo Installing %%~nf
+      echo.
+      echo Installing %%~nf ...
+      echo.
     )
-    msiexec /i %%i /qf /norestart
+    msiexec /i %%i /qn /norestart
   )
   echo.
 
@@ -57,32 +61,6 @@ if %OS%==x64 (
   echo.
 )
 
-if exist "%SystemDrive%\etc\mongod.conf" goto CHECKSRV
-
-echo Copying database configuration file ...
-if %OS%==x64 (
-  xcopy /h /y "%~dp0bin\MongoDB\Server\mongod.conf" "%SystemDrive%\etc\"
-) else xcopy /h /y "%~dp0bin\MongoDB\Server\mampv2\mongod.conf" "%SystemDrive%\etc\"
-echo.
-
-:CHECKSRV
-sc query MongoDB > nul
-if ERRORLEVEL 1060 (
-  goto CREATESRV
-) else goto ADDENVVARS
-
-:CREATESRV
-echo Creating a service for MongoDB server ...
-"%ProgramFiles%\MongoDB\Server\bin\mongod.exe" --config "%SystemDrive%\etc\mongod.conf" --install
-sc query MongoDB > nul
-if ERRORLEVEL 1060 (
-  echo Service installation failed
-) else (
-  echo Service installed successfully
-)
-echo.
-
-:ADDENVVARS
 echo Adding MongoDB tools to system path ...
 ::if "!PATH:%ProgramFiles%\MongoDB\Server\bin\=!" equ "%PATH%" (
    setx PATH "%PATH%;%ProgramFiles%\MongoDB\Server\bin\"
@@ -103,6 +81,32 @@ echo Adding 7-Zip to system path ...
 ::)
 echo.
 
+if exist "%SystemDrive%\etc\mongod.conf" goto CHECKSRV
+
+echo Copying database configuration file ...
+if %OS%==x64 (
+  xcopy /h /y "%~dp0bin\MongoDB\Server\mongod.conf" "%SystemDrive%\etc\"
+) else xcopy /h /y "%~dp0bin\MongoDB\Server\mampv2\mongod.conf" "%SystemDrive%\etc\"
+echo.
+
+:CHECKSRV
+sc query MongoDB > nul
+if ERRORLEVEL 1060 (
+  goto CREATESRV
+) else goto ADDENVVARS
+
+:CREATESRV
+echo Creating a service for MongoDB server ...
+mongod --config "%SystemDrive%\etc\mongod.conf" --install
+sc query MongoDB > nul
+if ERRORLEVEL 1060 (
+  echo Service installation failed
+) else (
+  echo Service installed successfully
+)
+echo.
+
+:ADDENVVARS
 echo Setting environment variables ...
 echo 1- Port
 if not defined PORT (

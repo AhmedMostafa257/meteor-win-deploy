@@ -34,6 +34,7 @@ if exist "%LOGFILEPATH%" (
 )
 
 cmd /c %1 > "%LOGFILEPATH%" 2>&1
+
 :QUIT
 pause
 exit

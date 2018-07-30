@@ -15,10 +15,14 @@ echo.
 ::echo Copying helper configuration file ...
 ::xcopy /h /y "%~dp0bin\helper-config.json" "%SystemDrive%\etc\labox"
 
+echo Unattended install: %UNATTENDED%
+
 echo Copying shared content
 if %UNATTENDED% EQU 0 (
 xcopy "%~dp0shared" "%SystemDrive%\" /s /e /t /q /h
-) else "%~dp0shared" "%SystemDrive%\" /s /e /t /q /h /y
+) else (
+  xcopy "%~dp0shared" "%SystemDrive%\" /s /e /t /q /h /y
+)
 echo.
 
 echo Checking windows architecture

@@ -30,7 +30,7 @@ for /F "tokens=3 delims=: " %%H in ('sc query "MongoDB" ^| findstr "        STAT
       goto CHECKSRV
     ) else (
       echo MongoDB service failed to start %SRVTRY% times
-      exit /b
+      exit
     )
   ) else echo MongoDB service running
 )
@@ -81,14 +81,14 @@ for /f "usebackq tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNA
 if exist "%INSTALLDIR%\bundle\programs\server" goto CHECKHELPER
 echo Application core files do not exist
 pause
-exit /b
+exit
 
 :CHECKHELPER
 if %HELPER% EQU 0 goto RUNAPP
 if exist "%SystemDrive%\helper" goto RUNAPP
 echo Helper application files do not exist
 pause
-exit /b
+exit
 
 :RUNAPP
 if %HELPER% EQU 0 (

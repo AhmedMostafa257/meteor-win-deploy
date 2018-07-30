@@ -9,7 +9,7 @@ echo.
 
 echo Updating NPM ...
 echo.
-cmd /c npm i -g npm
+if %UNATTENDED% EQU 0 cmd /c npm i -g npm
 echo.
 
 if %HELPER% EQU 0 (
@@ -20,8 +20,8 @@ echo Installing helper node modules ...
 echo.
 cd "%SystemDrive%\helper"
 cmd /c npm i
-cmd /c npm audit fix
-cmd /c npm audit
+if %UNATTENDED% EQU 0 cmd /c npm audit fix
+if %UNATTENDED% EQU 0 cmd /c npm audit
 echo.
 
 :INSTALLAPPNPM
@@ -33,8 +33,8 @@ if defined %INSTALLDIR% (
   cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
 )
 cmd /c npm i
-cmd /c npm audit fix
-cmd /c npm audit
+if %UNATTENDED% EQU 0 cmd /c npm audit fix
+if %UNATTENDED% EQU 0 cmd /c npm audit
 echo.
 
 echo done

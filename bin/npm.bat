@@ -29,8 +29,7 @@ echo Installing Meteor.JS application node modules ...
 echo.
 if defined %INSTALLDIR% (
   cd %INSTALLDIR%\bundle\programs\server\
-)
-else (
+) else (
   cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
 )
 cmd /c npm i

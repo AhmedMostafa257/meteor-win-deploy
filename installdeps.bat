@@ -38,7 +38,7 @@ if %OS%==x86 (
 
   for %%i in ("%~dp0sources\x86\*.exe") do (
     echo Installing %%i
-    start %%i
+    start /wait %%i
   )
   echo.
 )
@@ -56,7 +56,7 @@ if %OS%==x64 (
 
   for %%i in ("%~dp0sources\x64\*.exe") do (
     echo Installing %%i
-    start %%i
+    start /wait %%i
   )
   echo.
 )

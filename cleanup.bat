@@ -1,9 +1,8 @@
 @echo OFF
 
-echo.
-echo.
-echo.
+cls
 
+echo.
 echo Cleaning up Meteor application installation
 echo ...........................................
 echo.

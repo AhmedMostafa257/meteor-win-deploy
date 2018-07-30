@@ -14,4 +14,4 @@ echo.
 echo Tasks creation ended
 echo.
 
-pause
+if %UNATTENDED% EQU 0 pause

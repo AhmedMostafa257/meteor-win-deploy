@@ -166,4 +166,4 @@ echo.
 echo.
 echo.
 
-pause
+if %UNATTENDED% EQU 0 pause

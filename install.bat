@@ -29,6 +29,7 @@ set /A CLEANUP=0
 set /A HELPER=0
 set /A RUNAPP=0
 set /A RESTART=0
+set /A UNATTENDED=0
 for /F "delims= " %%a in (%~dp0install_config) do (
   if /I %%a == labox (
     set APPNAME=LaBox
@@ -54,6 +55,7 @@ for /F "delims= " %%a in (%~dp0install_config) do (
   if /I %%a == run set /A RUNAPP=1
   if /I %%a == cleanup set /A CLEANUP=1
   if /I %%a == restart set /A RESTART=1
+  if /I %%a == unattended set /A UNATTENDED=1
 )
 for /F "delims= " %%a in (%~dp0version) do (
   set APPVER=%%a
@@ -194,27 +196,33 @@ if %OS%==x64 (
 
 :EXTRACTFILES
 if exist "%INSTALLDIR%\bundle.tar.xz" (
-  start cmd /k "%~dp0extract.bat"
-  echo.
-  echo Please wait until extraction is completed
-  echo.
-  pause
+  if %UNATTENDED% EQU 0 (
+    start cmd /k "%~dp0extract.bat"
+    echo.
+    echo Please wait until extraction is completed
+    echo.
+    pause
+  ) else call "%~dp0extract.bat"
   goto CHECKBUNDLEDIR
 )
 if exist "%INSTALLDIR%\bundle.tar" (
-  start cmd /k "%~dp0extract.bat"
-  echo.
-  echo Please wait until extraction is completed
-  echo.
-  pause
+  if %UNATTENDED% EQU 0 (
+    start cmd /k "%~dp0extract.bat"
+    echo.
+    echo Please wait until extraction is completed
+    echo.
+    pause
+  ) else call "%~dp0extract.bat"
   goto CHECKBUNDLEDIR
 )
 if exist "%INSTALLDIR%\bundle.7z" (
-  start cmd /k "%~dp0extract.bat"
-  echo.
-  echo Please wait until extraction is completed
-  echo.
-  pause
+  if %UNATTENDED% EQU 0 (
+    start cmd /k "%~dp0extract.bat"
+    echo.
+    echo Please wait until extraction is completed
+    echo.
+    pause
+  ) else call "%~dp0extract.bat"
 )
 
 :CHECKBUNDLEDIR
@@ -251,11 +259,13 @@ echo [InternetShortcut] > "%DESKTOPDIR%\Sys.url"
 echo URL="http://localhost:8000" >> "%DESKTOPDIR%\Sys.url"
 echo.
 
-start cmd /k "%SystemDrive%\scripts\npm.bat"
-echo.
-echo Please wait until modules installation is completed
-echo.
-pause
+if %UNATTENDED% EQU 0 (
+  start cmd /k "%SystemDrive%\scripts\npm.bat"
+  echo.
+  echo Please wait until modules installation is completed
+  echo.
+  pause
+) else call "%SystemDrive%\scripts\npm.bat"
 
 echo.
 echo Finished

@@ -45,6 +45,7 @@ echo.
 echo Done
 echo.
 
-pause
-
-exit
+if %UNATTENDED% EQU 0 (
+  pause
+  exit
+)

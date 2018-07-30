@@ -74,7 +74,7 @@ for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\
 )
 
 set /A HELPER=0
-for /f "usebackq tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNAME%" /v Helper`) do (
+for /f "usebackq skip=2 tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNAME%" /v Helper`) do (
   set /A HELPER=%%E
 )
 

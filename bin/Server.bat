@@ -10,9 +10,11 @@ echo Checking MongoDB service
 echo Checking if service exists
 sc query MongoDB > nul
 if ERRORLEVEL 1060 (
+  echo.
   echo MongoDB service not found
   echo Run checks first or installdeps from meteor install patch repository
-  exit /b
+  echo.
+  exit
 ) else echo MongoDB service found
 echo.
 
@@ -38,19 +40,63 @@ echo.
 ::for /f "tokens=1-2 delims=/:" %%a in ("%TIME%") do (set mytime=%%a%%b)
 ::set FILENAME=%mydate%_%mytime%
 
-if exist "%SystemDrive%\var\www\meteor\bundle\programs\server" goto CHECKHELPER
+set "APPNAME=CosmosLabs"
+reg query "HKLM\SOFTWARE\Cosmos Labs\LaBox" >nul
+if %ERRORLEVEL% EQU 0 (
+  set APPNAME=LaBox
+  goto FINDINSTALLDIR
+)
+reg query "HKLM\SOFTWARE\Cosmos Labs\HosBox" >nul
+if %ERRORLEVEL% EQU 0 (
+  set APPNAME=HosBox
+  goto FINDINSTALLDIR
+)
+reg query "HKLM\SOFTWARE\Cosmos Labs\GiveBox" >nul
+if %ERRORLEVEL% EQU 0 (
+  set APPNAME=GiveBox
+  goto FINDINSTALLDIR
+)
+reg query "HKLM\SOFTWARE\Cosmos Labs\PharmBox" >nul
+if %ERRORLEVEL% EQU 0 (
+  set APPNAME=PharmBox
+  goto FINDINSTALLDIR
+)
+reg query "HKLM\SOFTWARE\Cosmos Labs\IOBox" >nul
+if %ERRORLEVEL% EQU 0 (
+  set APPNAME=IOBox
+  goto FINDINSTALLDIR
+)
+
+:FINDINSTALLDIR
+set "INSTALLDIR=%SystemDrive%\var\www\meteor"
+for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNAME%" /v InstallDir`) do (
+  set INSTALLDIR=%%E
+)
+
+set /A HELPER=0
+for /f "usebackq tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNAME%" /v Helper`) do (
+  set /A HELPER=%%E
+)
+
+if exist "%INSTALLDIR%\bundle\programs\server" goto CHECKHELPER
 echo Application core files do not exist
 pause
 exit /b
 
 :CHECKHELPER
+if %HELPER% EQU 0 goto RUNAPP
 if exist "%SystemDrive%\helper" goto RUNAPP
 echo Helper application files do not exist
 pause
 exit /b
 
 :RUNAPP
-cd "%SystemDrive%\helper\"
-node dist\main.js
+if %HELPER% EQU 0 (
+  cd "%INSTALLDIR%\bundle"
+  node main.js
+) else (
+  cd "%SystemDrive%\helper\"
+  node dist\main.js
+)
 
-goto RUNAPP
+goto CHECKSRV

@@ -300,7 +300,7 @@ echo.
 echo.
 echo.
 
-pause
+if %UNATTENDED% EQU 0 pause
 
 ::cmd /c "%userprofile%\Desktop\Server.bat"
 if %RESTART% EQU 0 (

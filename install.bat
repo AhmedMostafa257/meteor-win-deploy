@@ -19,6 +19,11 @@ reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" 
 echo %OS% architecture detected
 echo.
 
+schTasks /query /tn "Meteor helper application" >nul 2>&1
+if %ERRORLEVEL% EQU 0 schTasks /end /tn "Meteor helper application"
+
+:TASKSEND
+
 echo Reading configuration ...
 echo.
 set APPNAME=cosmoslabs
@@ -274,7 +279,9 @@ echo.
 if %RUNAPP% EQU 0 (
 echo Bye!
 ) else (
-  wscript "%SystemDrive%\scripts\hide_helper.vbs"
+  schTasks /query /tn "Meteor helper application" >nul 2>&1
+  if %ERRORLEVEL% EQU 0 schTasks /run /tn "Meteor helper application"
+  else goto UNKOWNERROR
 )
 goto FINISH
 

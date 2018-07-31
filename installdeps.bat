@@ -152,15 +152,14 @@ if not %ERRORLEVEL% == 0 (
 )
 echo.
 
-echo Meteor.JS application dependancies setup completed
-
 echo.
 echo.
 echo.
 
 echo ----------------------------------------------------
 echo.
-echo Setup completed and almost ready to copy and
+echo Meteor.JS application dependancies setup 
+echo completed and almost ready to copy and
 echo extract core application files to default paths
 echo review steps above to be sure before proceed
 echo.

@@ -19,10 +19,15 @@ reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" 
 echo %OS% architecture detected
 echo.
 
+echo.
+echo Terminating any running instances ...
+echo.
 schTasks /query /tn "Meteor helper application" >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
   schTasks /end /tn "Meteor helper application"
 )
+call "%~dp0\bin\kill_processes.bat"
+echo.
 
 :TASKSEND
 

@@ -46,7 +46,7 @@ if "%INSTALLDIR%"=="" (
   cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
 )
 cmd /c npm i
-if "%UNATTENDED%"="" (
+if "%UNATTENDED%"=="" (
   if %UNATTENDED% EQU 0 cmd /c npm audit fix
   if %UNATTENDED% EQU 0 cmd /c npm audit
 )
@@ -54,7 +54,7 @@ echo.
 
 echo done
 
-if "%UNATTENDED%"="" (
+if "%UNATTENDED%"=="" (
   if %UNATTENDED% EQU 0 (
     pause
     exit

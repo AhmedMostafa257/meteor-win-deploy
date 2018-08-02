@@ -28,5 +28,3 @@ for /f "usebackq tokens=2 delims= " %%a in (`tasklist ^| findstr node.exe`) do (
 echo.
 echo Done
 echo.
-
-exit

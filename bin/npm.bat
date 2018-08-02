@@ -14,6 +14,11 @@ if %UNATTENDED% EQU 0 (
   echo.
 )
 
+echo.
+npm config set python python2.7 -g
+npm config set msvs_version 2015 --global
+echo.
+
 if %HELPER% EQU 0 (
   goto INSTALLAPPNPM
 )

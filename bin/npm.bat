@@ -7,7 +7,7 @@ echo Installing node modules
 echo .......................
 echo.
 
-if defined %UNATTENDED% (
+if "%UNATTENDED%"=="" (
   if %UNATTENDED% EQU 0 (
     echo Updating NPM ...
     echo.
@@ -21,7 +21,7 @@ npm config set python python2.7 -g
 npm config set msvs_version 2015 --global
 echo.
 
-if defined %HELPER% (
+if "%HELPER%"=="" (
   if %HELPER% EQU 0 (
     goto INSTALLAPPNPM
   )
@@ -40,13 +40,13 @@ echo.
 :INSTALLAPPNPM
 echo Installing Meteor.JS application node modules ...
 echo.
-if defined %INSTALLDIR% (
+if "%INSTALLDIR%"=="" (
   cd %INSTALLDIR%\bundle\programs\server\
 ) else (
   cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
 )
 cmd /c npm i
-if defined %UNATTENDED% (
+if "%UNATTENDED%"="" (
   if %UNATTENDED% EQU 0 cmd /c npm audit fix
   if %UNATTENDED% EQU 0 cmd /c npm audit
 )
@@ -54,7 +54,7 @@ echo.
 
 echo done
 
-if defined %UNATTENDED% (
+if "%UNATTENDED%"="" (
   if %UNATTENDED% EQU 0 (
     pause
     exit

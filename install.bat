@@ -23,14 +23,11 @@ echo.
 echo Terminating any running instances ...
 echo.
 schTasks /query /tn "Meteor helper application" >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-  schTasks /end /tn "Meteor helper application"
-)
+if %ERRORLEVEL% EQU 0 schTasks /end /tn "Meteor helper application"
 call "%~dp0\bin\kill_processes.bat"
 echo.
 
 :TASKSEND
-
 echo Reading configuration ...
 echo.
 set APPNAME=cosmoslabs
@@ -258,19 +255,19 @@ echo.
 echo.
 echo Creating shortcuts ...
 echo.
-for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do (
-  if exist %%E (
-    set "DESKTOPDIR=%%E"
-  ) else (
-    set "DESKTOPDIR=%USERPROFILE%\Desktop"
-  )
-)
+::for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do (
+::  if exist %%E (
+::    set "DESKTOPDIR=%%E"
+::  ) else (
+::    set "DESKTOPDIR=%USERPROFILE%\Desktop"
+::  )
+::)
 
-echo Desktop directory is %DESKTOPDIR%
+echo Desktop directory is %ALLUSERSPROFILE%\Desktop
 ::xcopy /h /y "%~dp0bin\Server.bat" "%DESKTOPDIR%"
-mklink "%DESKTOPDIR%\Server.lnk" "%SystemDrive%\scripts\Server.bat"
-echo [InternetShortcut] > "%DESKTOPDIR%\Sys.url"
-echo URL="http://localhost:8000" >> "%DESKTOPDIR%\Sys.url"
+mklink "%SystemDrive%\Users\Public\Desktop\Server.lnk" "%SystemDrive%\scripts\Server.bat"
+echo [InternetShortcut] > "%SystemDrive%\Users\Public\Desktop\Sys.url"
+echo URL="http://localhost:8000" >> "%SystemDrive%\Users\Public\Desktop\Sys.url"
 echo.
 
 if %UNATTENDED% EQU 0 (
@@ -290,6 +287,12 @@ echo Bye!
 ) else (
   schTasks /query /tn "Meteor helper application" >nul 2>&1
   if %ERRORLEVEL% EQU 0 (
+    echo.
+    echo Terminating any running instances ...
+    echo.
+    schTasks /end /tn "Meteor helper application"
+    call "%~dp0\bin\kill_processes.bat"
+    echo.
     schTasks /run /tn "Meteor helper application"
   ) else (
     goto UNKOWNERROR

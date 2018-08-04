@@ -12,13 +12,13 @@ echo Installing node modules
 echo .......................
 echo.
 
-if [%UNATTENDED%]==[] goto CONFIGPYTHON
-if %UNATTENDED% EQU 0 (
-  echo Updating NPM ...
-  echo.
-  cmd /c npm i -g npm
-  echo.
+if not [%UNATTENDED%]==[] (
+  if %UNATTENDED% EQU 0 goto CONFIGPYTHON
 )
+echo Updating NPM ...
+echo.
+cmd /c npm i -g npm
+echo.
 
 :CONFIGPYTHON
 echo.
@@ -36,9 +36,11 @@ echo Installing helper node modules ...
 echo.
 cd "%SystemDrive%\helper"
 cmd /c npm i
-if [%UNATTENDED%]=[] goto INSTALLAPPNPM
-if %UNATTENDED% EQU 0 cmd /c npm audit fix
-if %UNATTENDED% EQU 0 cmd /c npm audit
+if not [%UNATTENDED%]==[] (
+  if %UNATTENDED% EQU 0 goto INSTALLAPPNPM
+)
+cmd /c npm audit fix
+cmd /c npm audit
 echo.
 
 :INSTALLAPPNPM
@@ -51,15 +53,14 @@ if [%INSTALLDIR%]==[] (
   cd "%SystemDrive%\var\www\meteor\bundle\programs\server"
 )
 cmd /c npm i
-if [%UNATTENDED%]==[] goto FINISH
-if %UNATTENDED% EQU 0 cmd /c npm audit fix
-if %UNATTENDED% EQU 0 cmd /c npm audit
-echo.
-
-if %UNATTENDED% EQU 0 (
-  pause
-  exit
+if [%UNATTENDED%]==[] (
+  if %UNATTENDED% EQU 0 goto FINISH
 )
+cmd /c npm audit fix
+cmd /c npm audit
+echo.
+pause
+exit
 
 :FINISH
 echo.

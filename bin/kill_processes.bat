@@ -42,7 +42,7 @@ if %ERRORLEVEL% EQU 0 (
   )
 ) else echo No NodeJS processes are running
 
-if %RETRYKILLCOUNT% LEQ 2 goto KILLLOOPBEGIN
+if %RETRYKILLCOUNT% LEQ 4 goto KILLLOOPBEGIN
 
 echo.
 echo Done

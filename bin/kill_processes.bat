@@ -22,11 +22,8 @@ echo.
 for /F "usebackq skip=1" %%G in (
   `wmic process where "CommandLine like '%%Server.bat%%' AND Caption like '%%cmd.exe%%'" get ProcessId`
 ) do (
-  set /A "CMDPID=%%G"
-  echo PID is %CMDPID%
-  if %CMDPID% GTR 0 (
-    taskkill /f /pid %%G
-  )
+  echo PID is "%%G"
+  if %%G GTR 0 taskkill /f /pid %%G
 )
 
 echo.
@@ -45,7 +42,7 @@ if %ERRORLEVEL% EQU 0 (
   )
 ) else echo No NodeJS processes are running
 
-if %RETRYKILLCOUNT% LEQ 3 goto RETRYKILLCOUNT
+if %RETRYKILLCOUNT% LEQ 2 goto KILLLOOPBEGIN
 
 echo.
 echo Done

@@ -260,15 +260,17 @@ echo Creating shortcuts ...
 echo.
 for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Desktop`) do (
   if exist %%E (
-    set DESKTOPDIR=%%E
+    set "DESKTOPDIR=%%E"
   ) else (
-    set DESKTOPDIR=%USERPROFILE%\Desktop
+    set "DESKTOPDIR=%USERPROFILE%\Desktop"
   )
 )
+
+echo Desktop directory is %DESKTOPDIR%
 ::xcopy /h /y "%~dp0bin\Server.bat" "%DESKTOPDIR%"
-mklink %DESKTOPDIR%\Server.lnk %SystemDrive%\scripts\Server.bat
-echo [InternetShortcut] > %DESKTOPDIR%\Sys.url
-echo URL="http://localhost:8000" >> %DESKTOPDIR%\Sys.url
+mklink "%DESKTOPDIR%\Server.lnk" "%SystemDrive%\scripts\Server.bat"
+echo [InternetShortcut] > "%DESKTOPDIR%\Sys.url"
+echo URL="http://localhost:8000" >> "%DESKTOPDIR%\Sys.url"
 echo.
 
 if %UNATTENDED% EQU 0 (

@@ -39,6 +39,7 @@ set /A HELPER=0
 set /A RUNAPP=0
 set /A RESTART=0
 set /A UNATTENDED=0
+set /A ERASEALL=0
 for /F "delims= " %%a in (%~dp0install_config) do (
   if /I %%a == labox (
     set APPNAME=LaBox
@@ -77,6 +78,7 @@ echo Installing %APPTITLE%
 echo version: %APPVER%
 echo ...........................................
 echo.
+
 
 if %ERASEALL% EQU 1 (
   cmd /c "%~dp0\cleanup.bat" "true"

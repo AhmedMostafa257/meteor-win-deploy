@@ -1,29 +1,41 @@
 @echo off
 
-cls
+if [%UNATTENDED%]==[] (
+  cls
+  goto BEGIN
+)
+if %UNATTENDED% EQU 0 cls
 
+:BEGIN
 echo.
 echo Terminating NodeJS and its related batch processes
 echo ..................................................
 echo.
 
-for %%a in ("C:\scripts\pids\*") do (
-  echo PID from file is %%~nxa
-  for /f "usebackq tokens=1" %%h in (`tasklist ^| findstr %%~nxa`) do (
-    echo Process name is %%h
-    if %%h==cmd.exe taskkill /T /F /PID %%h
-    if %%h==node.exe taskkill /T /F /PID %%h
+for /F "usebackq skip=1" %%G in (
+  `wmic process where "CommandLine like '%%Server.bat%%' AND Caption like '%%cmd.exe%%'" get ProcessId`
+) do (
+  if not [%%G]==[] (
+    echo PID is %%G
+    taskkill /f /pid %%G
   )
-  del /f %%a
 )
 
-for /f "usebackq tokens=2 delims= " %%a in (`tasklist ^| findstr node.exe`) do (
+echo.
+echo All cmd related processes terminated
+echo.
+
+tasklist | findstr /i "node.exe"
+
+if %ERRORLEVEL% EQU 0 (
+  for /f "usebackq tokens=2 delims= " %%a in (`tasklist ^| findstr /i "node.exe"`) do (
     echo.
     echo Terminating node processes ...
-    echo.
     echo Process PID is %%a
-    taskkill /T /F /PID %%a
+    taskkill /t /f /PID %%a
+    echo.
   )
+) else echo No NodeJS processes are running
 
 echo.
 echo Done

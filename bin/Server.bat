@@ -4,13 +4,6 @@ echo Starting Meteor.JS application server
 echo ....................................
 echo.
 
-for /F "usebackq tokens=*" %%G in (
-  `wmic process where "CommandLine like '%%Server.bat%%' AND Caption like '%%cmd.exe%%'" get ProcessID/value ^| find /I "="`
-) do (
-  if not exist "%SystemDrive%\scripts\pids\" mkdir "%SystemDrive%\scripts\pids\"
-  for /F "tokens=2 delims==" %%H in ("%%~G") do echo %%H >> "%SystemDrive%\scripts\pids\%%H"
-)
-
 set /A SRVTRY=1
 
 echo Checking MongoDB service

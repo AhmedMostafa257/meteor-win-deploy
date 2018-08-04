@@ -1,7 +1,12 @@
 @echo off
 
-cls
+if [%UNATTENDED%]==[] (
+  cls
+  goto BEGIN
+)
+if %UNATTENDED% EQU 0 cls
 
+:BEGIN
 echo.
 echo Extracting files ...
 echo ....................

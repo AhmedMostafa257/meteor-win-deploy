@@ -13,7 +13,7 @@ echo .......................
 echo.
 
 if [%UNATTENDED%]==[] goto UPDATENPM
-if %UNATTENDED% EQU 0 goto CONFIGPYTHON
+if %UNATTENDED% EQU 1 goto CONFIGPYTHON
 
 :UPDATENPM
 echo.
@@ -40,7 +40,7 @@ cd "%SystemDrive%\helper"
 cmd /c npm i
 
 if [%UNATTENDED%]==[] goto FIXHELPERMODULES
-if %UNATTENDED% EQU 0 goto INSTALLAPPNPM
+if %UNATTENDED% EQU 1 goto INSTALLAPPNPM
 
 :FIXHELPERMODULES
 cmd /c npm audit fix
@@ -58,7 +58,7 @@ if [%INSTALLDIR%]==[] (
 )
 cmd /c npm i
 if [%UNATTENDED%]==[] goto FIXAPPMODULES
-if %UNATTENDED% EQU 0 goto FINISH
+if %UNATTENDED% EQU 1 goto FINISH
 
 :FIXAPPMODULES
 cmd /c npm audit fix

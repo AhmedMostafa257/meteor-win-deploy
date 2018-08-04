@@ -65,6 +65,7 @@ for /F "delims= " %%a in (%~dp0install_config) do (
   if /I %%a == cleanup set /A CLEANUP=1
   if /I %%a == restart set /A RESTART=1
   if /I %%a == unattended set /A UNATTENDED=1
+  if /I %%a == eraseall set /A ERASEALL=1
 )
 for /F "delims= " %%a in (%~dp0version) do (
   set APPVER=%%a
@@ -77,8 +78,10 @@ echo version: %APPVER%
 echo ...........................................
 echo.
 
-if %CLEANUP% EQU 1 (
-  call "%~dp0cleanup.bat"
+if %ERASEALL% EQU 1 (
+  cmd /c "%~dp0\cleanup.bat" "true"
+) else (
+  if %CLEANUP% EQU 1 call "%~dp0cleanup.bat"
 )
 
 echo.
@@ -100,12 +103,8 @@ if %HELPER% EQU 1 (
 
 echo Copying scripting files ...
 echo.
-for %%i in ("%~dp0bin\*.bat") do (
-  xcopy "%%i" "%SystemDrive%\scripts\" /f /j /h /y
-)
-for %%i in ("%~dp0bin\*.vbs") do (
-  xcopy "%%i" "%SystemDrive%\scripts\" /f /j /h /y
-)
+for %%i in ("%~dp0bin\*.bat") do xcopy "%%i" "%SystemDrive%\scripts\" /f /j /h /y
+for %%i in ("%~dp0bin\*.vbs") do xcopy "%%i" "%SystemDrive%\scripts\" /f /j /h /y
 echo.
 
 call "%~dp0installdeps.bat"
@@ -138,29 +137,17 @@ if %CURRENTVER%==%APPVER% (
 
 :COPYAPPFILES
 if %OS%==x86 (
-  if exist "%~dp0x86\bundle\" (
-    goto RENFILES
-  )
-  if exist "%~dp0x86\bundle.tar" (
-    goto RENFILES
-  )
-  if exist "%~dp0x86\bundle.tar.xz" (
-    goto RENFILES
-  )
+  if exist "%~dp0x86\bundle\" goto RENFILES
+  if exist "%~dp0x86\bundle.tar" goto RENFILES
+  if exist "%~dp0x86\bundle.tar.xz" goto RENFILES
   if exist "%~dp0x86\bundle.7z" (
     goto RENFILES
   ) else goto EXTRACTFILES
 )
 if %OS%==x64 (
-  if exist "%~dp0x64\bundle\" (
-    goto RENFILES
-  )
-  if exist "%~dp0x64\bundle.tar" (
-    goto RENFILES
-  )
-  if exist "%~dp0x64\bundle.tar.xz" (
-    goto RENFILES
-  )
+  if exist "%~dp0x64\bundle\" goto RENFILES
+  if exist "%~dp0x64\bundle.tar" goto RENFILES
+  if exist "%~dp0x64\bundle.tar.xz" goto RENFILES
   if exist "%~dp0x64\bundle.7z" (
     goto RENFILES
   ) else goto EXTRACTFILES
@@ -196,12 +183,8 @@ echo.
 echo Copying application core files ...
 echo.
 if not exist %INSTALLDIR% mkdir %INSTALLDIR%
-if %OS%==x86 (
-  xcopy /s /e /j /h /y /i "%~dp0x86" %INSTALLDIR%
-)
-if %OS%==x64 (
-  xcopy /s /e /j /h /y /i "%~dp0x64" %INSTALLDIR%
-)
+if %OS%==x86 xcopy /s /e /j /h /y /i "%~dp0x86" %INSTALLDIR%
+if %OS%==x64 xcopy /s /e /j /h /y /i "%~dp0x64" %INSTALLDIR%
 
 :EXTRACTFILES
 if exist "%INSTALLDIR%\bundle.tar.xz" (

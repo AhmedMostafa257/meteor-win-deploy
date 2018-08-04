@@ -263,7 +263,7 @@ echo.
 ::  )
 ::)
 
-echo Desktop directory is %ALLUSERSPROFILE%\Desktop
+echo Desktop directory is "%SystemDrive%\Users\Public\Desktop"
 ::xcopy /h /y "%~dp0bin\Server.bat" "%DESKTOPDIR%"
 mklink "%SystemDrive%\Users\Public\Desktop\Server.lnk" "%SystemDrive%\scripts\Server.bat"
 echo [InternetShortcut] > "%SystemDrive%\Users\Public\Desktop\Sys.url"

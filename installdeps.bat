@@ -17,9 +17,9 @@ echo.
 
 echo Copying shared content ...
 if defined %UNATTENDED% (
-  if %UNATTENDED% EQU 0 (
-    xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h
-  ) else xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h /y
+  if %UNATTENDED% EQU 1 (
+    xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h /y
+  ) else xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h
 ) else xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h
 echo.
 

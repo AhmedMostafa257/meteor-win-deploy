@@ -15,11 +15,11 @@ echo.
 ::echo Copying helper configuration file ...
 ::xcopy /h /y "%~dp0bin\helper-config.json" "%SystemDrive%\etc\labox"
 
-echo Copying shared content
+echo Copying shared content ...
 if defined %UNATTENDED% if %UNATTENDED% EQU 0 (
-xcopy "%~dp0shared" "%SystemDrive%\" /s /e /h
+  xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /h
 ) else (
-  xcopy "%~dp0shared" "%SystemDrive%\" /s /e /h /y
+  xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /h /y
 )
 echo.
 

@@ -180,4 +180,4 @@ echo.
 echo.
 echo.
 
-if defined if %UNATTENDED% EQU 0 pause
+if not defined %UNATTENDED% if %UNATTENDED% EQU 0 pause

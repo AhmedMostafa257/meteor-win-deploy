@@ -16,11 +16,11 @@ echo.
 ::xcopy /h /y "%~dp0bin\helper-config.json" "%SystemDrive%\etc\labox"
 
 echo Copying shared content ...
-if defined %UNATTENDED% if %UNATTENDED% EQU 0 (
-  xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /h
-) else (
-  xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /h /y
-)
+if defined %UNATTENDED% (
+  if %UNATTENDED% EQU 0 (
+    xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h
+  ) else xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h /y
+) else xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h
 echo.
 
 echo Checking windows architecture

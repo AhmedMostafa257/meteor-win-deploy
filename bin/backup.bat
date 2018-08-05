@@ -18,7 +18,9 @@ if ERRORLEVEL 1060 (
 echo.
 
 :CHECKSRV
-echo Checking if service is running
+echo.
+echo Checking if service is running ...
+echo.
 for /F "tokens=3 delims=: " %%H in ('sc query "MongoDB" ^| findstr "        STATE"') do (
   if /I "%%H" NEQ "RUNNING" (
     set /A SRVTRY+=1
@@ -46,6 +48,7 @@ mkdir "%SystemDrive%\db_backups"
 echo.
 
 :BACKUP
+echo.
 echo Begin backup procedure
 set /A BACTRY+=1
 echo Running backup database {Try no. %BACTRY%} ...

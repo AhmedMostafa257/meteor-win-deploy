@@ -16,7 +16,7 @@ echo.
 ::xcopy /h /y "%~dp0bin\helper-config.json" "%SystemDrive%\etc\labox"
 
 echo Copying shared content
-if %UNATTENDED% EQU 0 (
+if defined %UNATTENDED% if %UNATTENDED% EQU 0 (
 xcopy "%~dp0shared" "%SystemDrive%\" /s /e /h
 ) else (
   xcopy "%~dp0shared" "%SystemDrive%\" /s /e /h /y
@@ -131,34 +131,45 @@ echo.
 
 
 :OPENPORTS
+wmic service where "Caption like '%%firewall%%'" get state | findstr /i "running" >nul
+if %ERRORLEVEL% GTR 0 (
+  echo.
+  echo Windows Firewall service is not running
+  echo no need to open ports
+  echo.
+  goto FINISH
+)
+echo.
 echo Opening ports in firewall ...
+echo.
 echo 1- Sync app roles
-netsh advfirewall firewall show rule name="Meteor helper sync"
+netsh advfirewall firewall show rule name="Meteor helper sync" >nul
 if not %ERRORLEVEL% == 0 (
   echo.
   echo Adding roles ...
   echo.
   netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
   netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
-)
+) else echo Already exists
 echo 2- MongoDB roles
-netsh advfirewall firewall show rule name="MongoDB"
+netsh advfirewall firewall show rule name="MongoDB">nul
 if not %ERRORLEVEL% == 0 (
   echo.
   echo Adding roles ...
   echo.
   netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
   netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
-)
+) else echo Already exists
 echo.
 
+:FINISH
 echo.
 echo.
 echo.
 
 echo ----------------------------------------------------
 echo.
-echo Meteor.JS application dependancies setup 
+echo Meteor.JS application dependancies setup
 echo completed and almost ready to copy and
 echo extract core application files to default paths
 echo review steps above to be sure before proceed
@@ -169,4 +180,4 @@ echo.
 echo.
 echo.
 
-if %UNATTENDED% EQU 0 pause
+if defined if %UNATTENDED% EQU 0 pause

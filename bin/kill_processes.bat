@@ -1,10 +1,4 @@
-@echo off
-
-if [%UNATTENDED%]==[] (
-  cls
-  goto BEGIN
-)
-if %UNATTENDED% EQU 0 cls
+ @echo off
 
 set /A RETRYKILLCOUNT=0
 

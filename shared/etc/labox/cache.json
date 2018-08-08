@@ -1,0 +1,9 @@
+{
+  "dictionary": [
+    {
+      "host": "192.168.1.7:27017",
+      "self": true,
+      "priority": 2
+    }
+  ]
+}

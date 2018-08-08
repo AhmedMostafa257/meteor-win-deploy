@@ -24,7 +24,7 @@ echo Copying shared content ...
 xcopy "%~dp0shared" "%SystemDrive%\" /s /e /f /j /h /y
 echo.
 
-echo Checking windows architecture
+echo Checking windows architecture ...
 reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=x86 || set OS=x64
 echo %OS% architecture detected
 echo.
@@ -145,7 +145,7 @@ echo Opening ports in firewall ...
 echo.
 echo 1- Sync app roles
 netsh advfirewall firewall show rule name="Meteor helper sync" >nul
-if not %ERRORLEVEL% == 0 (
+if not %ERRORLEVEL% EQU 0 (
   echo.
   echo Adding roles ...
   echo.
@@ -153,13 +153,22 @@ if not %ERRORLEVEL% == 0 (
   netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
 ) else echo Already exists
 echo 2- MongoDB roles
-netsh advfirewall firewall show rule name="MongoDB">nul
-if not %ERRORLEVEL% == 0 (
+netsh advfirewall firewall show rule name="MongoDB server">nul
+if not %ERRORLEVEL% EQU 0 (
   echo.
   echo Adding roles ...
   echo.
-  netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
-  netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
+  netsh advfirewall firewall add rule name="MongoDB server" dir=in action=allow protocol=TCP localport=27017
+  netsh advfirewall firewall add rule name="MongoDB server" dir=out action=allow protocol=TCP localport=27017
+) else echo Already exists
+echo 2- MeteorJS server roles
+netsh advfirewall firewall show rule name="NodeJS server">nul
+if not %ERRORLEVEL% EQU 0 (
+  echo.
+  echo Adding roles ...
+  echo.
+  netsh advfirewall firewall add rule name="NodeJS server" dir=in action=allow protocol=TCP localport=8000
+  netsh advfirewall firewall add rule name="NodeJS server" dir=out action=allow protocol=TCP localport=8000
 ) else echo Already exists
 echo.
 

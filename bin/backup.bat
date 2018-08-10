@@ -7,13 +7,14 @@ echo.
 set /A SRVTRY=1
 set /A BACTRY=0
 
-echo Checking MongoDB service
-echo Checking if service exists
+echo.
+echo Checking MongoDB service existance ...
+echo.
 sc query MongoDB > nul
 if ERRORLEVEL 1060 (
   echo MongoDB service not found
   echo Run checks first or installdeps from meteor install patch repository
-  exit /b
+  exit
 ) else echo MongoDB service found
 echo.
 
@@ -31,10 +32,19 @@ for /F "tokens=3 delims=: " %%H in ('sc query "MongoDB" ^| findstr "        STAT
       goto CHECKSRV
     ) else (
       echo MongoDB service failed to start %SRVTRY% times
-      exit /b
+      exit
     )
   ) else echo MongoDB service running
 )
+echo.
+
+echo.
+echo Checking MongoDB tools existance in windows PATH ...
+echo.
+set path | findstr /i "mongodb"
+if ERRORLEVEL EQU 0 (
+    echo MongoDB tools exists in PATH
+) else echo MongoDB tools not found in PATH
 echo.
 
 for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%b-%%a)
@@ -61,11 +71,11 @@ if exist "%SystemDrive%\db_backups\%DUMPFILENAME%.gz" (
 mongodump -h 127.0.0.1:27017 -d admin --archive="%SystemDrive%\db_backups\%DUMPFILENAME%.gz" --gzip
 if %errorlevel% EQU 0 (
   echo Database backup completed successfully
-  exit /b
+  exit
 ) else (
   if /I %BACTRY% LEQ 10 (
-    goto RESTORE
-  ) else echo Database backup failed
+    goto BACKUP
+  ) else echo Database backup failed %BACTRY% times
 )
 
-pause
+exit

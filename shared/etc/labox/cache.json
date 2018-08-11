@@ -1,9 +1,23 @@
 {
   "dictionary": [
     {
-      "host": "192.168.1.7:27017",
+      "host": "197.162.70.16:27017",
       "self": true,
-      "priority": 2
+      "priority": 5,
+      "online":true
+    },
+    {
+      "host": "196.221.166.108:27017",
+      "priority": 1,
+      "online":true
+    },
+    {
+      "host": "team.moud.info:27017",
+      "priority": 10,
+      "online":true,
+      "primary":true
     }
-  ]
+  ],
+  "state":"online",
+  "online":true
 }

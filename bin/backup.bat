@@ -75,7 +75,9 @@ if %errorlevel% EQU 0 (
 ) else (
   if /I %BACTRY% LEQ 10 (
     goto BACKUP
-  ) else echo Database backup failed %BACTRY% times
+  ) else (
+    echo.
+    echo Database backup failed %BACTRY% times
+    echo.
+  )
 )
-
-exit

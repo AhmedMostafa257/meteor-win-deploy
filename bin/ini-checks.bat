@@ -40,10 +40,11 @@ echo.
 sc query MongoDB > nul
 if ERRORLEVEL 1060 (
   echo MongoDB service not found
-  echo Run checks first or installdeps from meteor install patch repository
-  exit /b
+  echo Run installdeps from meteor install patch repository
 ) else echo MongoDB service found
 echo.
+
+set /A SRVTRY=1
 
 echo.
 echo Checking if MongoDB service is running ...

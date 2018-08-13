@@ -74,8 +74,8 @@ echo.
 echo.
 echo Checking MongoDB tools existance in windows PATH ...
 echo.
-set path | findstr /i "mongodb"
-if ERRORLEVEL EQU 0 (
+set path | findstr /i "mongodb" > nul
+if %ERRORLEVEL% EQU 0 (
     echo MongoDB tools exists in PATH
 ) else echo MongoDB tools not found in PATH
 echo.

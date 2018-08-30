@@ -36,45 +36,16 @@ for /F "tokens=3 delims=: " %%H in ('sc query "MongoDB" ^| findstr "        STAT
 )
 echo.
 
-::for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%b-%%a)
-::for /f "tokens=1-2 delims=/:" %%a in ("%TIME%") do (set mytime=%%a%%b)
-::set FILENAME=%mydate%_%mytime%
-
-set "APPNAME=CosmosLabs"
-reg query "HKLM\SOFTWARE\Cosmos Labs\LaBox" >nul
-if %ERRORLEVEL% EQU 0 (
-  set APPNAME=LaBox
-  goto FINDINSTALLDIR
-)
-reg query "HKLM\SOFTWARE\Cosmos Labs\HosBox" >nul
-if %ERRORLEVEL% EQU 0 (
-  set APPNAME=HosBox
-  goto FINDINSTALLDIR
-)
-reg query "HKLM\SOFTWARE\Cosmos Labs\GiveBox" >nul
-if %ERRORLEVEL% EQU 0 (
-  set APPNAME=GiveBox
-  goto FINDINSTALLDIR
-)
-reg query "HKLM\SOFTWARE\Cosmos Labs\PharmBox" >nul
-if %ERRORLEVEL% EQU 0 (
-  set APPNAME=PharmBox
-  goto FINDINSTALLDIR
-)
-reg query "HKLM\SOFTWARE\Cosmos Labs\IOBox" >nul
-if %ERRORLEVEL% EQU 0 (
-  set APPNAME=IOBox
-  goto FINDINSTALLDIR
-)
-
+set "APPNAME=meteor"
+set %APPTITLE%=MeteorJS
 :FINDINSTALLDIR
 set "INSTALLDIR=%SystemDrive%\var\www\meteor"
-for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNAME%" /v InstallDir`) do (
+for /f "usebackq eol=H tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\%APPTITLE%\%APPNAME%" /v InstallDir`) do (
   set INSTALLDIR=%%E
 )
 
 set /A HELPER=0
-for /f "usebackq skip=2 tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\Cosmos Labs\%APPNAME%" /v Helper`) do (
+for /f "usebackq skip=2 tokens=2*" %%D IN (`reg query "HKLM\SOFTWARE\%APPTITLE%\%APPNAME%" /v Helper`) do (
   set /A HELPER=%%E
 )
 

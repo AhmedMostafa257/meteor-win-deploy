@@ -8,13 +8,6 @@ echo Installing dependancies for Meteor application
 echo ..............................................
 echo.
 
-::if exist "%SystemDrive%\etc\labox\helper-config.json" goto FINISH
-::else goto COPYCFG
-
-::COPYCFG
-::echo Copying helper configuration file ...
-::xcopy /h /y "%~dp0bin\helper-config.json" "%SystemDrive%\etc\labox"
-
 echo Copying shared content ...
 if [%UNATTENDED%]==[] (
   goto ASKFILES
@@ -146,24 +139,35 @@ if %ERRORLEVEL% GTR 0 (
 echo.
 echo Opening ports in firewall ...
 echo.
-echo 1- Sync app roles
-netsh advfirewall firewall show rule name="Meteor helper sync" >nul
-if not %ERRORLEVEL% == 0 (
-  echo.
-  echo Adding roles ...
-  echo.
-  netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
-  netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
-) else echo Already exists
-echo 2- MongoDB roles
-netsh advfirewall firewall show rule name="MongoDB">nul
-if not %ERRORLEVEL% == 0 (
-  echo.
-  echo Adding roles ...
-  echo.
-  netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
-  netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
-) else echo Already exists
+if %HELPER% EQU 1 (
+  echo Sync app roles
+  netsh advfirewall firewall show rule name="Meteor helper sync" >nul
+  if not %ERRORLEVEL% == 0 (
+    echo.
+    echo Adding roles ...
+    echo.
+    netsh advfirewall firewall add rule name="Meteor helper sync" dir=in action=allow protocol=TCP localport=2717
+    netsh advfirewall firewall add rule name="Meteor helper sync" dir=out action=allow protocol=TCP localport=2717
+  ) else echo Already exists
+  echo MongoDB roles
+  netsh advfirewall firewall show rule name="MongoDB">nul
+  if not %ERRORLEVEL% == 0 (
+    echo.
+    echo Adding roles ...
+    echo.
+    netsh advfirewall firewall add rule name="MongoDB" dir=in action=allow protocol=TCP localport=27017
+    netsh advfirewall firewall add rule name="MongoDB" dir=out action=allow protocol=TCP localport=27017
+  ) else echo Already exists
+)
+echo MeteorJS server roles
+  netsh advfirewall firewall show rule name="MeteorJS">nul
+  if not %ERRORLEVEL% == 0 (
+    echo.
+    echo Adding roles ...
+    echo.
+    netsh advfirewall firewall add rule name="MeteorJS" dir=in action=allow protocol=TCP localport=8000
+    netsh advfirewall firewall add rule name="MeteorJS" dir=out action=allow protocol=TCP localport=8000
+  ) else echo Already exists
 echo.
 
 :FINISH
@@ -184,4 +188,4 @@ echo.
 echo.
 echo.
 
-if defined if %UNATTENDED% EQU 0 pause
+if defined %UNATTENDED% if %UNATTENDED% EQU 0 pause

@@ -104,6 +104,8 @@ if ERRORLEVEL 1060 (
 
 :CREATESRV
 echo Creating a service for MongoDB server ...
+for /f "tokens=1* delims= " %%a in ('type "SystemDrive\etc\mongod.conf" ^| findstr dbPath') do dir %%b > nul || mkdir %%b
+for /f "tokens=1* delims= " %%a in ('type "SystemDrive\etc\mongod.conf" ^| findstr "path"') do dir %%~dpb > nul || mkdir %%~dpb
 mongod --config "%SystemDrive%\etc\mongod.conf" --install
 sc query MongoDB > nul
 if ERRORLEVEL 1060 (
